@@ -41,7 +41,7 @@ class Checkout:
         return self.is_unary_complicated(to_check) or self.is_binary_complicated(to_check)
 
     def is_atomic(self, to_check: str):
-        return to_check in self.possible_signs
+        return to_check in self.possible_signs or to_check in self.logic_constant
 
     def is_unary_complicated(self, to_check: str):
         stripped = copy.deepcopy(to_check)

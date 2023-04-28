@@ -9,7 +9,7 @@ operation_priority = {"!": 5, '*': 4, '+': 3, '@': 2, '=': 1, '(': 0, ')': 0}
 def starting_table_constructor(prebuilt_formula: str):
     list_of_variables = []
     for sign in prebuilt_formula:
-        if sign.islower() or sign.isupper():
+        if sign.isupper() or sign == '1' or sign == '0':
             list_of_variables.append(sign)
     list_of_variables = list(dict.fromkeys(list_of_variables))
     table_of_truth = [bin(counter) for counter in range(2 ** len(list_of_variables))]
@@ -32,7 +32,7 @@ class Formula:
         self.final_form = []
         stack = []
         for letter in self.formula_pre_built:
-            if letter.islower() or letter.isupper():
+            if letter.isupper() or letter == '1' or letter == '0':
                 self.final_form.append(letter)
             elif letter in operators:
                 if len(stack) != 0:
@@ -56,6 +56,10 @@ class Formula:
         while counter != len(filled_with_variables):
             if filled_with_variables[counter].islower() or filled_with_variables[counter].isupper():
                 filled_with_variables[counter] = variables.get(filled_with_variables[counter])
+            elif filled_with_variables[counter] == '1':
+                filled_with_variables[counter] = 1
+            elif filled_with_variables[counter] == '0':
+                filled_with_variables[counter] = 0
             counter+=1
         return filled_with_variables
 
