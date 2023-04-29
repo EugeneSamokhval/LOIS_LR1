@@ -139,6 +139,7 @@ def main():
     user_input = ''
     while user_input != 'exit':
         user_input = input()
+        user_input = user_input.strip(' ')
         machine_logic_formula = optimized_into_machine(user_input)
         is_correct = Checkout(machine_logic_formula)
         if not is_correct.check_result():
