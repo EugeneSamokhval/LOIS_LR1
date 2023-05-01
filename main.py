@@ -1,5 +1,5 @@
 #Лабараторная работа №1 по дисциплине логические основы интелликтуальных систем
-#Выполнена студентом группы 121703 БГУИР Самохвалом Евгением Сергеевичем
+#Выполнена студентами группы 121703 БГУИР Самохвалом Евгением Сергеевичем и Савицким Игорем Вадимовичем
 
 
 import copy
@@ -49,24 +49,33 @@ class Checkout:
 
     def is_unary_complicated(self, to_check: str):
         stripped = copy.deepcopy(to_check)
-        stripped = stripped.removeprefix('(!')
-        stripped = stripped.removesuffix(')')
-        return to_check[0] == '(' and to_check[1] == '!'\
-            and self.is_formula(stripped) and to_check[len(to_check)-1] == ')' and\
-            not self.is_binary_complicated(to_check)
+        if len(stripped) >= 2:
+            if stripped[0] == '(' and stripped[1] == '!' and stripped[len(stripped)-1] == ')':
+                stripped = stripped.removeprefix('(!')
+                stripped = stripped.removesuffix(')')
+                return to_check[0] == '(' and to_check[1] == '!'\
+                    and self.is_formula(stripped) and to_check[len(to_check)-1] == ')' and\
+                    not self.is_binary_complicated(to_check)
+            else:
+                return False
+        else:
+            return False
 
     def is_binary_complicated(self, to_check):
         check_box = [False for iteration in range(5)]
         first_subformula, second_subformula, action = complicated_binary_formula_divider(to_check)
-        if to_check[0] == '(':
-            check_box[0] = True
-        if to_check[len(to_check)-1] == ')':
-            check_box[4] = True
-        if self.is_formula(first_subformula) and self.is_formula(second_subformula):
-            check_box[1], check_box[3] = True, True
-        if action in self.operations:
-            check_box[2] = True
-        return check_box.count(True) == len(check_box)
+        if len(to_check) > 1:
+            if to_check[0] == '(':
+                check_box[0] = True
+            if to_check[len(to_check)-1] == ')':
+                check_box[4] = True
+            if self.is_formula(first_subformula) and self.is_formula(second_subformula):
+                check_box[1], check_box[3] = True, True
+            if action in self.operations:
+                check_box[2] = True
+            return check_box.count(True) == len(check_box)
+        else:
+            return False
 
     def check_result(self):
         return self.is_formula(self.input)
@@ -79,7 +88,6 @@ class Solution:
 
     def subformulas_search(self):
         recursive_search(self.object_description.input, self)
-        print(self.all_subformulas)
         for subformula in self.all_subformulas:
             subformula_index = self.all_subformulas.index(subformula)
             temp_solver = Parser.Formula(subformula)
@@ -141,7 +149,7 @@ def machine_into_optimized(machine: str):
 
 def main():
     user_input = ''
-    while user_input != 'exit':
+    while user_input != 'нет':
         user_input = input()
         user_input = user_input.strip(' ')
         machine_logic_formula = optimized_into_machine(user_input)
@@ -151,6 +159,7 @@ def main():
         else:
             solve = Solution(is_correct)
             solve.subformulas_search()
+        user_input = input('Вы хотите продолжить? Да/нет \n')
 
 
 if __name__ == "__main__":
