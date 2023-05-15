@@ -1,4 +1,4 @@
-#Лабараторная работа №1 по дисциплине логические основы интелликтуальных систем
+#Лабараторная работа №1 по дисциплине логические основы интеллектуальных систем
 #Выполнена студентами группы 121703 БГУИР Самохвалом Евгением Сергеевичем и Савицким Игорем Вадимовичем
 
 
@@ -31,8 +31,9 @@ def complicated_unary_formula_divider(to_divide: str):
 
 
 class Checkout:
-    def __init__(self, user_input: str):
+    def __init__(self, user_input: str, user_input_not_machine):
         self.input = user_input
+        self.un_filtered = user_input_not_machine
         self.possible_signs = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
                                'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
         self.operations = ['@', '!', '*', '=', '+', '(', ')']
@@ -78,6 +79,14 @@ class Checkout:
             return False
 
     def check_result(self):
+        previous = ''
+        if self.un_filtered.count('*') > 0 or self.un_filtered.count('+') > 0 or self.un_filtered.count('=') > 0\
+           or self.un_filtered.count('@') >0:
+            return False
+        for sign in self.input:
+            if sign.isupper() and previous.isupper():
+                return False
+            previous = copy.deepcopy(sign)
         return self.is_formula(self.input)
 
 
@@ -92,11 +101,11 @@ class Solution:
             subformula_index = self.all_subformulas.index(subformula)
             temp_solver = Parser.Formula(subformula)
             solutions, table_of_truth = temp_solver.output_logic_list()
-            print(subformula_index, ')', machine_into_optimized(subformula), ':', solutions.count(1) == len(solutions))
+            print(machine_into_optimized(subformula), ':', solutions.count(1) == len(solutions))
 
 
 def recursive_search(to_find: str, where_to_add: Solution):
-    descrption = Checkout(to_find)
+    descrption = Checkout(to_find, '')
     if descrption.is_atomic(to_find):
         where_to_add.all_subformulas.append(to_find)
     elif descrption.is_binary_complicated(to_find):
@@ -149,17 +158,17 @@ def machine_into_optimized(machine: str):
 
 def main():
     user_input = ''
-    while user_input != 'нет':
-        user_input = input()
-        user_input = user_input.strip(' ')
+    while user_input != 'n':
+        user_input = input('Введите формулу языка логики высказываний или n если хотите выйти\n')
         machine_logic_formula = optimized_into_machine(user_input)
-        is_correct = Checkout(machine_logic_formula)
-        if not is_correct.check_result():
-            print('Введённая формула не фвляется формулой языка логики высказываний')
+        is_correct = Checkout(machine_logic_formula, user_input)
+        if user_input == 'n':
+            pass
+        elif not is_correct.check_result() or user_input.count(' ') > 0:
+            print('Введённая формула не является формулой сокращённого языка логики высказываний')
         else:
             solve = Solution(is_correct)
             solve.subformulas_search()
-        user_input = input('Вы хотите продолжить? Да/нет \n')
 
 
 if __name__ == "__main__":

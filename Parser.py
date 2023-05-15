@@ -75,11 +75,23 @@ class Formula:
                     stack[0] = LogicOperatins.logic_then(stack[1], stack[0])
                     stack.remove(stack[1])
                 elif sign == "=":
-                    stack[0] = stack[1] == stack[0]
+                    if stack[1] == stack[0]:
+                        stack[0] = 1
+                    else:
+                        stack[0] = 0
+                    stack.pop(1)
                 elif sign == "*":
-                    stack[0] = stack[1] and stack[0]
+                    if stack[1] and stack[0]:
+                        stack[0] = 1
+                    else:
+                        stack[0] = 0
+                    stack.pop(1)
                 elif sign == "+":
-                    stack[0] = stack[1] or stack[0]
+                    if stack[1] or stack[0]:
+                        stack[0] = 1
+                    else:
+                        stack[0] = 0
+                    stack.pop(1)
         return stack[0]
 
     def output_logic_list(self):
